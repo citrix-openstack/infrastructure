@@ -1,0 +1,48 @@
+#!/bin/bash
+
+set -eu
+
+OPENSTACK_REPOS=glance horizon keystone nova python-novaclient swift
+CITRIX_REPOS=glance-build infrastructure keystone-build manifests nova-build \
+             openstack.compute openstackx os-vpx python-novaclient-build \
+             swift-build
+
+wipe()
+{
+  sudo rm -rf /openstack_build_cache/repos
+}
+#trap wipe ERR
+
+update()
+{
+  local repo="$1"
+  local openstack="$2"
+
+  cd /openstack_build_cache/repos
+  if [ ! -d $repo ]
+  then
+    sudo mkdir $repo
+    sudo chown jenkins $repo
+    cd $repo
+    git init --bare
+    if $openstack
+    then
+      git remote add origin --mirror http://github.com/openstack/$repo
+    fi
+    git remote add citrix-openstack --mirror \
+       http://github.com/citrix-openstack/$repo
+  else
+    cd $repo
+  fi
+  git remote update
+}
+
+sudo mkdir -p /openstack_build_cache/repos
+for repo in $OPENSTACK_REPOS
+do
+  update "$repo" true
+done
+for repo in $CITRIX_REPOS
+do
+  update "$repo" false
+done
