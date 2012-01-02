@@ -7,10 +7,20 @@ OPENSTACK_REPOS="glance horizon keystone nova python-keystoneclient \
 CITRIX_REPOS="glance-build infrastructure keystone-build manifests nova-build \
               openstackx os-vpx python-keystone-client-build \
               python-novaclient-build qa swift-build"
+HTTP_URL="http://github.com"
+GIT_URL="git://github.com"
+REPO_CACHE="/openstack_build_cache/repos"
+
+if ${GIT_PROTOCOL-false}
+then
+  url="$GIT_URL"
+else
+  url="$HTTP_URL"
+fi
 
 wipe()
 {
-  sudo rm -rf /openstack_build_cache/repos
+  sudo rm -rf "$REPO_CACHE"
 }
 #trap wipe ERR
 
@@ -19,7 +29,7 @@ update()
   local repo="$1"
   local openstack="$2"
 
-  cd /openstack_build_cache/repos
+  cd "$REPO_CACHE"
   if [ ! -d $repo ]
   then
     sudo mkdir $repo
@@ -28,10 +38,9 @@ update()
     git init --bare
     if $openstack
     then
-      git remote add origin --mirror http://github.com/openstack/$repo
+      git remote add origin --mirror "$url/openstack/$repo"
     fi
-    git remote add citrix-openstack --mirror \
-       http://github.com/citrix-openstack/$repo
+    git remote add citrix-openstack --mirror "$url/citrix-openstack/$repo"
   else
     cd $repo
   fi
@@ -39,7 +48,7 @@ update()
   git update-server-info
 }
 
-sudo mkdir -p /openstack_build_cache/repos
+sudo mkdir -p "$REPO_CACHE"
 for repo in $OPENSTACK_REPOS
 do
   update "$repo" true
