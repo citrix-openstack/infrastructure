@@ -2,9 +2,11 @@
 
 set -eu
 
-OPENSTACK_REPOS="glance horizon keystone nova python-novaclient swift"
+OPENSTACK_REPOS="glance horizon keystone nova python-keystoneclient \
+                 python-novaclient swift"
 CITRIX_REPOS="glance-build infrastructure keystone-build manifests nova-build \
-              openstackx os-vpx python-novaclient-build swift-build"
+              openstackx os-vpx python-keystone-client-build \
+              python-novaclient-build qa swift-build"
 
 wipe()
 {
