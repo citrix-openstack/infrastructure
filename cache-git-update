@@ -36,6 +36,7 @@ update()
     cd $repo
   fi
   git remote update
+  git update-server-info
 }
 
 sudo mkdir -p /openstack_build_cache/repos
