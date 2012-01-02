@@ -5,7 +5,7 @@ set -eu
 OPENSTACK_REPOS="glance horizon keystone nova python-keystoneclient \
                  python-novaclient swift"
 CITRIX_REPOS="glance-build infrastructure keystone-build manifests nova-build \
-              openstackx os-vpx python-keystone-client-build \
+              openstackx os-vpx python-keystoneclient-build \
               python-novaclient-build qa swift-build"
 HTTP_URL="http://github.com"
 GIT_URL="git://github.com"
