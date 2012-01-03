@@ -1,0 +1,40 @@
+#!/bin/sh
+
+set -eu
+
+thisdir=$(dirname $(readlink -f "$0"))
+
+. "$thisdir/git-cache.sh"
+
+
+if [ $# -ne 1 ]
+then
+  cmd=$(basename $0)
+  echo "Usage: $cmd <repo>
+" >&2
+  exit 1
+fi
+
+repo="$1"
+
+cache=$(git config --get citrix.cache || set_cache_hint)
+gitprotocol=$(git config --get citrix.gitprotocol || echo "true")
+
+if $gitprotocol
+then
+  url="$GIT_URL"
+else
+  url="$HTTP_URL"
+fi
+
+git clone -n -o cache "$cache/$repo"
+cd "$repo"
+git config --add --local citrix.thiscache "$cache/$repo"
+if is_openstack
+then
+  git remote add openstack "$url/openstack/$repo" 
+fi
+git remote add citrix-openstack "$url/citrix-openstack/$repo"
+git remote rm cache
+git remote update
+git checkout "$CITRIX_BRANCH"

@@ -1,0 +1,48 @@
+#!/bin/bash
+
+set -eu
+
+thisdir=$(dirname $(readlink -f "$0"))
+
+. "$thisdir/git-cache.sh"
+
+thiscache=$(git config --get citrix.thiscache || true)
+if [ ! "$thiscache" ]
+then
+  cache=$(git config --get citrix.cache || set_cache_hint)
+  repo="$(basename $(readlink -f .))"
+  thiscache="$cache/$repo"
+  echo "
+Guessing that your repo is called '$repo'.
+
+If this is wrong, correct it with
+git config --replace --local citrix.thiscache \\
+    '$cache/<repo>'
+" >&2
+  git config --add --local citrix.thiscache "$thiscache"
+fi
+
+_rm()
+{
+  git remote rm cache
+}
+trap _rm ERR
+git remote add cache "$thiscache"
+git remote update cache
+trap '' ERR
+_rm
+
+update_remote()
+{
+  local remote="$1"
+
+  if git remote | grep -q "^$remote$"
+  then
+    git remote update --prune "$remote"
+  fi
+}
+
+update_remote openstack
+update_remote citrix-openstack
+
+git pull "$@"

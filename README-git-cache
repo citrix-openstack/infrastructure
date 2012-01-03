@@ -1,0 +1,21 @@
+git-cache-pull and git-cache-clone
+==================================
+
+Installation
+------------
+
+mkdir -p ~/bin
+thisdir=$(readlink -f .)
+(cd ~/bin
+ ln -s "$thisdir/git-cache-pull"
+ ln -s "$thisdir/git-cache-clone"
+)
+
+Use
+---
+
+git cache-clone nova  # The first time you do this it will tell you how to
+                      # configure the system.  Re-run it when you've done so.
+
+cd nova
+git cache-pull
