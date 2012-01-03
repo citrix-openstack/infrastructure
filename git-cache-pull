@@ -16,10 +16,10 @@ then
 Guessing that your repo is called '$repo'.
 
 If this is wrong, correct it with
-git config --replace --local citrix.thiscache \\
+git config --replace citrix.thiscache \\
     '$cache/<repo>'
 " >&2
-  git config --add --local citrix.thiscache "$thiscache"
+  git config --add citrix.thiscache "$thiscache"
 fi
 
 _rm()

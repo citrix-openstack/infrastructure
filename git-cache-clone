@@ -29,7 +29,7 @@ fi
 
 git clone -n -o cache "$cache/$repo"
 cd "$repo"
-git config --add --local citrix.thiscache "$cache/$repo"
+git config --add citrix.thiscache "$cache/$repo"
 if is_openstack
 then
   git remote add openstack "$url/openstack/$repo" 
