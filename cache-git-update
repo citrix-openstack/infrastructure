@@ -4,6 +4,7 @@ set -eu
 
 OPENSTACK_REPOS="glance horizon keystone nova python-keystoneclient \
                  python-novaclient swift"
+OPENSTACK_DEV_REPOS="devstack"
 CITRIX_REPOS="glance-build infrastructure keystone-build manifests nova-build \
               openstackx os-vpx python-keystoneclient-build \
               python-novaclient-build qa swift-build"
@@ -27,7 +28,7 @@ wipe()
 update()
 {
   local repo="$1"
-  local openstack="$2"
+  local owners="$2"
 
   cd "$REPO_CACHE"
   if [ ! -d $repo ]
@@ -36,11 +37,11 @@ update()
     sudo chown jenkins $repo
     cd $repo
     git init --bare
-    if $openstack
-    then
-      git remote add origin --mirror "$url/openstack/$repo"
-    fi
-    git remote add citrix-openstack --mirror "$url/citrix-openstack/$repo"
+    local first=true
+    for owner in $owners
+    do
+      git remote add "$owner" --mirror "$url/$owner/$repo"
+    done
   else
     cd $repo
   fi
@@ -51,9 +52,13 @@ update()
 sudo mkdir -p "$REPO_CACHE"
 for repo in $OPENSTACK_REPOS
 do
-  update "$repo" true
+  update "$repo" "openstack citrix-openstack"
+done
+for repo in $OPENSTACK_DEV_REPOS
+do
+  update "$repo" "openstack-dev"
 done
 for repo in $CITRIX_REPOS
 do
-  update "$repo" false
+  update "$repo" "citrix-openstack"
 done
