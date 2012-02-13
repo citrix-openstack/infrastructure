@@ -9,6 +9,7 @@ CITRIX_REPOS="glance-build infrastructure keystone-build manifests nova-build \
               openstackx os-vpx python-keystoneclient-build \
               python-novaclient-build qa swift-build"
 HTTP_URL="http://github.com"
+HTTPS_URL="https://github.com"
 GIT_URL="git://github.com"
 REPO_CACHE="/openstack_build_cache/repos"
 
@@ -16,7 +17,7 @@ if ${GIT_PROTOCOL-false}
 then
   url="$GIT_URL"
 else
-  url="$HTTP_URL"
+  url="$HTTPS_URL"
 fi
 
 wipe()
