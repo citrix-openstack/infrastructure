@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eu
+set -eux
 
 OPENSTACK_REPOS="glance horizon keystone nova python-keystoneclient \
                  python-novaclient swift"
